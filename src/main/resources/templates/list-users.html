@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>User Directory</title>
+</head>
+<body>
+<div align="center">
+<h1>Users list</h1>
+</div>
+<hr>
+<a th:href="@{/showFormForAddUser}"
+   class="btn btn-primary btn-sm mr-5 mb-3">
+    Add Employee
+</a>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th>
+            <a th:href="@{'/page/' + ${currentPage} + '?sortField=username&sortDir=' + ${reverseSortDir}}">
+                Username
+            </a>
+        </th>
+        <th>
+            <a th:href="@{'/page/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reverseSortDir}}">
+                First name
+            </a>
+        </th>
+        <th>
+            <a th:href="@{'/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir}}">
+                Last name
+            </a>
+        </th>
+        <th>
+            <a th:href="@{'/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}">
+                E mail
+            </a>
+        </th>
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="tempUser : ${users}">
+        <td th:text="${tempUser.username}"></td>
+        <td th:text="${tempUser.firstName}"></td>
+        <td th:text="${tempUser.lastName}"></td>
+        <td th:text="${tempUser.email}"></td>
+
+          <td>
+              <!--    <div sec:authorize="hasRole('ROLE_ADMIN')">-->
+              <a th:href="@{/showFormForUpdateUser(userId=${tempUser.id})}"
+                 class="btn btn-info btn-sm">
+                  Update
+              </a>
+              <a th:href="@{/deleteUser(userId=${tempUser.id})}"
+                  class="btn btn-danger btn-sm"
+                  onclick="if(!(confirm('Are you sure you want to delete this user!?'))) return false">
+                  Delete
+              </a>
+              <!--   </div>-->
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${totalPages>1}">
+    <div class="row col-sm-10">
+        <div class="col-sm-2">
+            Total rows: [[${totalItems}]]
+        </div>
+        <div class="col-sm-1">
+            <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir}} ">[[${i}]]</a>
+                <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+            </span>
+        </div>
+        <div class="col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir}}">Next</a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+        <div class="col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir}}">Last</a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
